@@ -101,9 +101,7 @@ fun wrap(o: Any?): Any? {
                 o is String) {
             return o
         }
-        if (o is Uri || o.javaClass.getPackage().name.startsWith("java.")) {
-            return o.toString()
-        }
+        return o.toString()
     } catch (e: Exception) {
         // Log.e("ReceiveIntentPlugin", e.message, e)
     }
