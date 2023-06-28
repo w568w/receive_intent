@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import com.xiaomi.mipush.sdk.MiPushMessage
 // import android.util.Log
 import org.json.JSONArray
 import org.json.JSONException
@@ -89,6 +90,26 @@ fun wrap(o: Any?): Any? {
         if (o is Map<*, *>) {
             // Log.e("ReceiveIntentPlugin", "$o is Map<*, *>")
             return JSONObject(o as Map<*, *>?)
+        }
+        if(o is MiPushMessage){
+            return wrap(
+                mapOf(
+                    "messageId" to o.messageId,
+                    "messageType" to o.messageType,
+                    "content" to o.content,
+                    "alias" to o.alias,
+                    "topic" to o.topic,
+                    "userAccount" to o.userAccount,
+                    "passThrough" to o.passThrough,
+                    "notifyType" to o.notifyType,
+                    "notifyId" to o.notifyId,
+                    "isNotified" to o.isNotified,
+                    "description" to o.description,
+                    "title" to o.title,
+                    "category" to o.category,
+                    "extra" to JSONObject(o.extra as Map<*, *>?)
+                )
+            )
         }
         if (o is Boolean ||
                 o is Byte ||
