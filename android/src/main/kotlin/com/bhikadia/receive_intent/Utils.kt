@@ -177,7 +177,7 @@ fun getApplicationSignature(context: Context, packageName: String): List<String>
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // New signature
             val sig = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES).signingInfo
-            signatureList = if (sig.hasMultipleSigners()) {
+            signatureList = if (sig!!.hasMultipleSigners()) {
                 // Send all with apkContentsSigners
                 sig.apkContentsSigners.map {
                     val digest = MessageDigest.getInstance("SHA-256")
@@ -194,7 +194,7 @@ fun getApplicationSignature(context: Context, packageName: String): List<String>
             }
         } else {
             val sig = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures
-            signatureList = sig.map {
+            signatureList = sig!!.map {
                 val digest = MessageDigest.getInstance("SHA-256")
                 digest.update(it.toByteArray())
                 bytesToHex(digest.digest())
