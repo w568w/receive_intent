@@ -22,7 +22,6 @@ String localMavenPath = project.mkdir("build").absolutePath
 rootProject.allprojects {
     repositories {
         google()
-        jcenter()
         maven { url "file://$localMavenPath" }
         mavenCentral()
     }
