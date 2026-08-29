@@ -7,13 +7,36 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import com.xiaomi.mipush.sdk.MiPushMessage
 // import android.util.Log
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.security.MessageDigest
 import java.util.ArrayList
+
+private const val MI_PUSH_MESSAGE_CLASS = "com.xiaomi.mipush.sdk.MiPushMessage"
+
+private fun miPushMessageToMap(message: Any): Map<String, Any?> {
+    fun value(getter: String): Any? =
+        message.javaClass.getMethod(getter).invoke(message)
+
+    return mapOf(
+        "messageId" to value("getMessageId"),
+        "messageType" to value("getMessageType"),
+        "content" to value("getContent"),
+        "alias" to value("getAlias"),
+        "topic" to value("getTopic"),
+        "userAccount" to value("getUserAccount"),
+        "passThrough" to value("getPassThrough"),
+        "notifyType" to value("getNotifyType"),
+        "notifyId" to value("getNotifyId"),
+        "isNotified" to value("isNotified"),
+        "description" to value("getDescription"),
+        "title" to value("getTitle"),
+        "category" to value("getCategory"),
+        "extra" to value("getExtra")
+    )
+}
 
 
 fun jsonToBundle(json: JSONObject): Bundle {
@@ -91,25 +114,8 @@ fun wrap(o: Any?): Any? {
             // Log.e("ReceiveIntentPlugin", "$o is Map<*, *>")
             return JSONObject(o as Map<*, *>?)
         }
-        if(o is MiPushMessage){
-            return wrap(
-                mapOf(
-                    "messageId" to o.messageId,
-                    "messageType" to o.messageType,
-                    "content" to o.content,
-                    "alias" to o.alias,
-                    "topic" to o.topic,
-                    "userAccount" to o.userAccount,
-                    "passThrough" to o.passThrough,
-                    "notifyType" to o.notifyType,
-                    "notifyId" to o.notifyId,
-                    "isNotified" to o.isNotified,
-                    "description" to o.description,
-                    "title" to o.title,
-                    "category" to o.category,
-                    "extra" to JSONObject(o.extra as Map<*, *>?)
-                )
-            )
+        if (o.javaClass.name == MI_PUSH_MESSAGE_CLASS) {
+            return wrap(miPushMessageToMap(o))
         }
         if (o is Boolean ||
                 o is Byte ||
